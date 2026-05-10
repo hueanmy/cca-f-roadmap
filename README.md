@@ -1,6 +1,6 @@
 # CCA-F Study Roadmap
 
-> Lộ trình ôn thi **Claude Certified Architect — Foundations (CCA-F)** trong 8 tuần, kèm working examples chạy được cho mọi trap và mental model.
+> Lộ trình ôn thi **Claude Certified Architect — Foundations (CCA-F)** trong **30h · 4 tuần**, kèm working examples chạy được cho mọi trap và mental model.
 > Companion repo của [hueanmy.github.io/cca-f-roadmap.html](https://hueanmy.github.io/cca-f-roadmap.html).
 
 [Tiếng Việt](#tiếng-việt) · [English](#english)
