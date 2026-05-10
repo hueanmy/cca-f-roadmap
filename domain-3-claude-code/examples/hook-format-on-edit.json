@@ -1,0 +1,47 @@
+{
+  "_comment": "Drop this into .claude/settings.json (or merge with existing). Demonstrates the deterministic-formatting pattern from the CCA-F trap list — you don't trust Claude to remember to run the formatter, you wire it as a PostToolUse hook so the harness runs it every time.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ruff format $CLAUDE_FILE_PATH && uv run ruff check $CLAUDE_FILE_PATH --fix",
+            "_comment": "Runs after Edit/Write/MultiEdit. $CLAUDE_FILE_PATH is the file Claude just touched."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "domain-3-claude-code/examples/scripts/audit-bash.sh",
+            "_comment": "Block dangerous bash commands. Hook returns non-zero → tool call is blocked and Claude sees the error."
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "_comment": "Scope tools to what this project actually needs. Less is more — exam answer for 'agent picks wrong tool' is usually 'tighten the allowlist'.",
+    "allow": [
+      "Read",
+      "Grep",
+      "Edit",
+      "Write",
+      "Bash(uv run *:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(gh pr *:*)"
+    ],
+    "deny": [
+      "Bash(rm:*)",
+      "Bash(git push --force:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+[project]
+name = "cca-f-roadmap"
+version = "0.1.0"
+description = "Hands-on study repo for the Claude Certified Architect — Foundations (CCA-F) exam. Working examples for every domain trap and mental model."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "anthropic>=0.50.0",
+    "python-dotenv>=1.0.0",
+]
+
+[dependency-groups]
+mcp = ["mcp>=1.0.0"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

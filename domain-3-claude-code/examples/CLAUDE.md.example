@@ -1,0 +1,51 @@
+# Project: Acme API
+
+> Vietnamese fintech API. Python 3.11, FastAPI, PostgreSQL. Compliance: PCI-DSS Level 1.
+
+## Stack
+
+- Backend: FastAPI 0.115, SQLAlchemy 2, Alembic
+- Tests: pytest, pytest-asyncio
+- Lint/format: ruff (line-length 100)
+- Package manager: uv (NOT pip, NOT poetry)
+- Deploy: AWS ECS Fargate, Terraform
+
+## Commands you'll use often
+
+```bash
+uv sync                       # install / update deps
+uv run pytest -x              # run tests, stop on first failure
+uv run ruff check . --fix     # autofix lint
+uv run alembic revision --autogenerate -m "msg"  # new migration
+just deploy-staging           # custom shortcut
+```
+
+## Conventions
+
+- All money is `Decimal`, never `float`. Never.
+- All DB writes inside `async with session.begin():` — no commits scattered.
+- Public API request/response = Pydantic models in `api/schemas/`. ORM models in `db/models/` are NEVER returned over the wire.
+- Imports: stdlib → third-party → local, separated by blank lines (ruff handles this).
+- Tests live next to code: `services/billing.py` → `services/test_billing.py`.
+
+## Things to NOT do
+
+- ❌ Don't run `uv pip install <pkg>` — add to `pyproject.toml` then `uv sync`.
+- ❌ Don't add `print(...)` — use `logger.info(...)` (structlog).
+- ❌ Don't add fields to `db/models/` without an Alembic migration.
+- ❌ Don't write integration tests against staging DB — use `docker compose up test-db`.
+- ❌ Don't commit `.env`, `.env.local`, `.aws/credentials`, anything starting with `key_*`.
+
+## Architecture refs (read instead of asking)
+
+- `architecture.md` — system overview
+- `db/MIGRATIONS.md` — migration runbook (downtime windows, rollback procedure)
+- `compliance/PCI-CHECKLIST.md` — what's audited, what's gated
+
+## Anti-patterns we've banned
+
+- Sync DB calls in async handlers (perf killer — caught in CR review #4421)
+- Catching bare `except:` — wraps DB errors silently (incident 2025-09-12)
+- `requests` library for outbound — use `httpx.AsyncClient` for everything
+
+@AGENTS.md
